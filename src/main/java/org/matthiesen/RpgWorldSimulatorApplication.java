@@ -1,4 +1,4 @@
-package kevin.matt;
+package org.matthiesen;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

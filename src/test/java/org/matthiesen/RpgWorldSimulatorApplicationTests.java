@@ -1,4 +1,4 @@
-package kevin.matt;
+package org.matthiesen;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

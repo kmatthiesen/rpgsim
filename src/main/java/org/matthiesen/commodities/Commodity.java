@@ -1,8 +1,7 @@
-package kevin.matt.commodities;
+package org.matthiesen.commodities;
 
 import org.springframework.core.io.Resource;
 
-import java.math.BigDecimal;
 import java.util.ResourceBundle;
 
 /**
@@ -10,7 +9,7 @@ import java.util.ResourceBundle;
  */
 public class Commodity {
 
-    private static final String nameName = "name";
+    private static final String commodityName = "name";
     private static final String baseQuantityName = "base.quantity";
     private static final String basePriceName = "base.price";
     private static final String surplusPriceScalingName = "surplus.price.scaling";
@@ -30,7 +29,7 @@ public class Commodity {
         String bundleName = "models/" + fileName.substring(0,fileName.indexOf('.'));
 
         ResourceBundle properties = ResourceBundle.getBundle(bundleName);
-        this.name = properties.getString(nameName);
+        this.name = properties.getString(commodityName);
         this.baseQuantity = Double.parseDouble(properties.getString(baseQuantityName));
         this.currentQuantity = baseQuantity;
         this.basePrice = Double.parseDouble(properties.getString(basePriceName));

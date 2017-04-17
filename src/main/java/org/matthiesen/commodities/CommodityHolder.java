@@ -1,4 +1,4 @@
-package kevin.matt.commodities;
+package org.matthiesen.commodities;
 
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
@@ -13,10 +13,13 @@ import java.util.List;
  */
 public class CommodityHolder {
 
-    private static CommodityHolder ourInstance = new CommodityHolder();
+    private static CommodityHolder ourInstance;
     private static List<Commodity> commodities;
 
     public static CommodityHolder getInstance() {
+        if (ourInstance == null) {
+            ourInstance = new CommodityHolder();
+        }
         return ourInstance;
     }
 
