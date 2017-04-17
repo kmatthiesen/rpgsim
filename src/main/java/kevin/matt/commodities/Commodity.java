@@ -1,22 +1,20 @@
-package kevin.matt.models;
+package kevin.matt.commodities;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import org.springframework.core.io.Resource;
+
+import java.math.BigDecimal;
 import java.util.ResourceBundle;
 
 /**
  * Created by kmatthiesen on 12/25/16.
  */
-public class AbstractCommodity implements Commodity {
+public class Commodity {
 
-    protected static final String baseQuantityName = "base.quantity";
-    protected static final String basePriceName = "base.price";
-    protected static final String surplusPriceScalingName = "surplus.price.scaling";
-    protected static final String deficitPriceScalingName = "deficit.price.scaling";
-
-    protected ResourceBundle properties;
+    private static final String nameName = "name";
+    private static final String baseQuantityName = "base.quantity";
+    private static final String basePriceName = "base.price";
+    private static final String surplusPriceScalingName = "surplus.price.scaling";
+    private static final String deficitPriceScalingName = "deficit.price.scaling";
 
     private String name;
     private Double baseQuantity;
@@ -26,16 +24,16 @@ public class AbstractCommodity implements Commodity {
     private Double surplusPriceScaling;
     private Double deficitPriceScaling;
 
-    public AbstractCommodity() {
-        throw new RuntimeException("Must use non default Constructor");
-    }
+    public Commodity(Resource resource) {
 
-    public AbstractCommodity(String name) {
-        properties = ResourceBundle.getBundle(name);
-        this.name = name;
-        this.baseQuantity = Double.parseDouble(properties.getString(basePriceName));
+        String fileName = resource.getFilename();
+        String bundleName = "models/" + fileName.substring(0,fileName.indexOf('.'));
+
+        ResourceBundle properties = ResourceBundle.getBundle(bundleName);
+        this.name = properties.getString(nameName);
+        this.baseQuantity = Double.parseDouble(properties.getString(baseQuantityName));
         this.currentQuantity = baseQuantity;
-        this.basePrice = Double.parseDouble(properties.getString(baseQuantityName));
+        this.basePrice = Double.parseDouble(properties.getString(basePriceName));
         this.currentPrice = basePrice;
         this.surplusPriceScaling = Double.parseDouble(properties.getString(surplusPriceScalingName));
         this.deficitPriceScaling = Double.parseDouble(properties.getString(deficitPriceScalingName));
@@ -43,20 +41,23 @@ public class AbstractCommodity implements Commodity {
 
     public void adjustQuantity(Double quantityAdjustment) {
         currentQuantity += quantityAdjustment;
+        if (currentQuantity < 0) {
+            currentQuantity = 0.0;
+        }
         calculatePrice();
     }
 
     public void calculatePrice() {
         Double newPrice;
-        if (currentQuantity > baseQuantity * 1.2) {
-            newPrice = basePrice - (basePrice * surplusPriceScaling);
+        if (currentQuantity > baseQuantity * 1.2 ) {
+            newPrice = currentPrice - (basePrice * surplusPriceScaling);
             if (newPrice < basePrice / 3) {
                 currentPrice = basePrice / 3;
             } else {
                 currentPrice = newPrice;
             }
         } else if (currentQuantity < baseQuantity * 1.2) {
-            newPrice = basePrice + (basePrice * deficitPriceScaling);
+            newPrice = currentPrice + (basePrice * deficitPriceScaling);
             if (newPrice > basePrice * 3) {
                 currentPrice = basePrice * 3;
             } else {
